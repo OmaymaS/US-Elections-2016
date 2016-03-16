@@ -1,12 +1,6 @@
----
-title: "US Elections 2016: Nevada results and Trump's Claims about Hispanic Support"
-author: "OmaymaS"
-date: "March 15, 2016"
-output: 
-  html_document: 
-    keep_md: yes
-    toc: yes
----
+# US Elections 2016: Nevada results and Trump's Claims about Hispanic Support
+OmaymaS  
+March 15, 2016  
  
 ###Overview
 
@@ -26,7 +20,8 @@ The following questions are addressed:
 
 ###Pre-Processing
 
-```{r  Library_Call, results='hide', message=FALSE, warning=FALSE}
+
+```r
 #calling libraries
 library(dplyr)
 library(ggplot2)
@@ -35,19 +30,19 @@ library(knitr)
 
 ###Data Processing
 
-```{r Data_Read}
+
+```r
 #reading data
 
 res<-read.csv("../primary_results.csv",header = T, stringsAsFactors = F) #read primary results
 
 county_facts<-read.csv("../county_facts.csv",header = T, stringsAsFactors = F) #read county facts
-
 ```
 
--In the county facts sheet the name of the counties contains the word County; e.g *"`r county_facts$area_name[3]`"* which is not the case in the result's sheet. To be able to join both dataframes, we'll remove the word County from the county_facts column (area_name).
+-In the county facts sheet the name of the counties contains the word County; e.g *"Autauga County"* which is not the case in the result's sheet. To be able to join both dataframes, we'll remove the word County from the county_facts column (area_name).
 
-```{r Data_Manipulation}
 
+```r
 #remove "County" from the county name in the county fact sheet
 county_facts$area_name<-gsub(" County","",county_facts$area_name)
 
@@ -64,7 +59,6 @@ primdata<-inner_join(res,facts,by = c("state_abbreviation","county"))
 
 #select top republican candidates
 primdata_rep<-filter(primdata,candidate %in% c("Ted Cruz","Donald Trump","Marco Rubio"))
-                  
 ```
 
 ###Data Analysis
@@ -74,8 +68,8 @@ primdata_rep<-filter(primdata,candidate %in% c("Ted Cruz","Donald Trump","Marco 
 
 -First of all, we'll look if any correlations can be seen between hispanics' percentage in counties and the number of votes. The following plot shows that for the top-three republican candidates including Donald Trump.
 
-```{r plot1, fig.width=12, fig.height=9 }
 
+```r
 ggplot(data=primdata_rep, aes(x=hispanic,y=votes))+
         geom_point(aes(color=candidate,size=votes, alpha=0.4))+ 
         facet_grid(candidate~state)+
@@ -84,9 +78,9 @@ ggplot(data=primdata_rep, aes(x=hispanic,y=votes))+
         scale_y_continuous(name="Votes")+
         theme(legend.position="top")+
         guides(color=FALSE,alpha = FALSE)
-
-
 ```
+
+![](US_Election_Nevada_Analysis_files/figure-html/plot1-1.png)\
 
 From the first glance, we cannot see significant correlations. However, We can see that:
 
@@ -101,7 +95,8 @@ So we'll have a closer look on Nevada.
 
 #### -Votes Vs. Hispanics' percentage for top-3 Republican candidates in Nevada
 
-```{r plot2, fig.width=12, fig.height=9}
+
+```r
 primdata_rep_Nevada<-filter(primdata_rep,state=="Nevada")
 
 ggplot(data=primdata_rep_Nevada , aes(x=hispanic,y=votes))+
@@ -115,6 +110,8 @@ ggplot(data=primdata_rep_Nevada , aes(x=hispanic,y=votes))+
         geom_text(data=filter(primdata_rep_Nevada,votes>20000)  ,aes(label=county),hjust=1, vjust=1)
 ```
 
+![](US_Election_Nevada_Analysis_files/figure-html/plot2-1.png)\
+
 As we can see, one main county in Nevada, "Clark", stands out in the data and it is obviously the one which was the reason for Trump's victory in Nevada. We need to dig deeper and see if there is something special about it. So we'll extract some columns and calculate the following values:
 
 * votes_percandidate: the percentage of each Republican candidate's total votes coming from each county.
@@ -124,8 +121,8 @@ As we can see, one main county in Nevada, "Clark", stands out in the data and it
 * votes_perstate: the percentage of Nevada's votes going to each Republican candidate in each county.
 
 
-```{r}
 
+```r
 Data_Nevada<- primdata %>% 
         ungroup() %>%  
         filter(state=="Nevada" & party=="Republican") %>% 
@@ -134,7 +131,6 @@ Data_Nevada<- primdata %>%
         mutate(votes_percandidate=100*votes/sum(votes) , votes_total=sum(votes_perstate)) %>%
         select(state, county,populaion2014,
         candidate,votes,fraction_votes,votes_percandidate,votes_total,votes_perstate)
-
 ```
 
 
@@ -147,11 +143,14 @@ If we have a closer look at Clark we can see the following:
 
 * Trump won Nevada by **46%** and **58%** of the total votes he received, came from Clark (i.e. 26% of Nevada's total votes)
 
-```{r echo=F} 
-options(dplyr.width = Inf)
-kable (filter(Data_Nevada,county=="Clark"),format="markdown" )
 
-``` 
+|state  |county | populaion2014|candidate    | votes| fraction_votes| votes_percandidate| votes_total| votes_perstate|
+|:------|:------|-------------:|:------------|-----:|--------------:|------------------:|-----------:|--------------:|
+|Nevada |Clark  |       2069681|Donald Trump | 20132|          0.489|           58.30124|   46.116349|      26.886402|
+|Nevada |Clark  |       2069681|Marco Rubio  | 10114|          0.246|           56.37681|   23.958973|      13.507305|
+|Nevada |Clark  |       2069681|Ted Cruz     |  7857|          0.191|           48.86498|   21.473597|      10.493069|
+|Nevada |Clark  |       2069681|Ben Carson   |  1488|          0.036|           41.11633|    4.833195|       1.987233|
+|Nevada |Clark  |       2069681|John Kasich  |  1399|          0.034|           51.64267|    3.617885|       1.868373|
 
 Based on the given data, it is worth checking whether there are other factors *(especially if related to Hispanics)* that might be contributing to the high percentage of votes coming from Clark in specific. One hypothesis is money and business play a big role in political life!
 
@@ -164,15 +163,25 @@ By plotting the Trump's votes in Nevada  and looking at the percentage of both h
 
 * Clark is on the top  right of the grid, i.e. it has high percentage of hespanics, as mentioned earlier, and also the highest percentage of hispanic-owned firms in all the given counties(9.4%).
 
-```{r}
+
+```r
 max(primdata$firms.hispanic)
-
-primdata$county[which.max(primdata$firms.hispanic)]
-
 ```
 
-```{r plot3, fig.width=8, fig.height=6}
+```
+## [1] 9.4
+```
 
+```r
+primdata$county[which.max(primdata$firms.hispanic)]
+```
+
+```
+## [1] "Clark"
+```
+
+
+```r
 ggplot(data= filter(primdata_rep_Nevada, candidate=="Donald Trump") , aes(x=hispanic,y=firms.hispanic))+
         geom_point(aes(color=candidate,size=votes))+ 
         # facet_grid(candidate~state)+
@@ -183,6 +192,8 @@ ggplot(data= filter(primdata_rep_Nevada, candidate=="Donald Trump") , aes(x=hisp
         guides(color=FALSE,alpha = FALSE)+
         geom_text(data=filter(primdata_rep_Nevada,votes>7000)  ,aes(label=county),hjust=1, vjust=1)
 ```
+
+![](US_Election_Nevada_Analysis_files/figure-html/plot3-1.png)\
 
 
 ### Conclusion
