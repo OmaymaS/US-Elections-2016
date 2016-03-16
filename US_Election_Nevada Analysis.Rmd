@@ -10,7 +10,9 @@ output: html_document
 
 This work focuses on the results of the US elections' primaries in Nevada. The Republican candidate Donald Trump highlighted that his victory with 46% in Nevada was supported by Hispanics/Lationos. There were different political analysis about what nevada showed about Trump's Hispanic support and what it did not. 
 
-The following analysis addresses these specific questions:
+The analysis starts with a look into the top-three Republican candidates' results in the four given states, then it zooms in to look into Nevada, and finally digs deeper into the results of an interesting county in Nevada that gave extreme values.
+
+The following questions are addressed:
 
 * Can we find a correlation between the percentage of hispanics in Nevada's counties and the number of votes given to Donald Trump? Can we see other trends in the rest of the states?
 
@@ -182,7 +184,7 @@ ggplot(data= filter(primdata_rep_Nevada, candidate=="Donald Trump") , aes(x=hisp
 
 ### Conclusion
 
-This analysis focused on the victory of Trump on Nevada, trying to find out if his claims about Hispanic support could be linked to any specific factors or if any trends could be found. We started with the top-three republican results in the four given states, then we started to zoom in to look into nevada, and finally zoomed in to a certain county in Nevada, Clark, which had interesting results.
+This analysis focused on the victory of Trump on Nevada, trying to find out if his claims about Hispanic support could be linked to any specific factors or if any trends could be found. 
 
 According to the given data and plots we can conclude the following:
 
