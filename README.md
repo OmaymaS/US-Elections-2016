@@ -1,5 +1,6 @@
 # US Elections 2016 Primaries
-This repository contains some analysis related to the US Elections Primaries 2016. 
+
+### Overview
 
 [US_Election_Nevada_Analysis][id1] focuses on the results of the US elections' primaries in Nevada. The Republican candidate Donald Trump highlighted that his victory with 46% in Nevada was supported by Hispanics/Lationos. There were different political analysis about what nevada showed about Trump's Hispanic support and what it did not. 
 
